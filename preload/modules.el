@@ -2,7 +2,7 @@
       (
        pomidor
        do
-       org
        exwm
        guix
+       org
        ))

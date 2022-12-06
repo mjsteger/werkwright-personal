@@ -38,6 +38,6 @@
                                   (split-window-horizontally)
                                   )))
 
-(global-set-key (kbd "M-g") 'goto-line-with-feedback)
+(global-set-key (kbd "M-g") 'goto-line)
 
 (global-set-key (kbd "C-c o") 'occur)

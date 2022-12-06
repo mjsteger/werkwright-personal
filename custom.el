@@ -78,7 +78,7 @@
 (setq user-mail-address "mikeysteger@gmail.com")
 
 ;; Some quick face customizations at the end
-(set-face-attribute 'default nil :height 150)
+(set-face-attribute 'default nil :height 140)
 (set-face-attribute 'mode-line-inactive nil :background "#353839")
 (set-face-attribute 'minibuffer-prompt nil :foreground "#CDCDCD")
 (set-face-attribute 'ivy-current-match nil :background "#353839")
@@ -116,3 +116,8 @@
 
 (when (boundp 'pomidor-sound-tack)
   (push '(:eval (format-pomidor-work)) (nthcdr 2 mode-line-format)))
+
+;; Set up go-playground correctly
+(when (boundp 'go-playground-basedir)
+  (setq go-playground-go-command "GO111MODULE=on go")
+  (setq go-playground-basedir "/home/msteger/work/cthulhu/docode/src/do/playground"))
