@@ -3,6 +3,7 @@
        pomidor
        do
        exwm
+       smudge
        guix
        org
        ))

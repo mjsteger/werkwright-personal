@@ -3,7 +3,7 @@
 
 (global-set-key (kbd "C-c C-v") 'eshell)
 
-(global-set-key (kbd "C-c o") 'occur)
+(global-set-key (kbd "C-c C-o") 'occur)
 
 (global-set-key (kbd "M-m") 'move-beginning-of-line)
 
@@ -40,4 +40,5 @@
 
 (global-set-key (kbd "M-g") 'goto-line)
 
-(global-set-key (kbd "C-c o") 'occur)
+
+(global-set-key (kbd "C-c C-o") 'occur)

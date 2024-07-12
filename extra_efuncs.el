@@ -41,6 +41,33 @@
               (complete-with-action a list s p)))))
     (list beg end table)))
 
+;; Jank that lets you do dabbrev in vterm. Worth it!
+(defun vterm-dabbrev-completion (&optional args)
+  (interactive "P")
+  (if (equal major-mode 'vterm-mode)
+      (let ((inhibit-read-only t)
+            (in-dabbrev t))
+        (ms/dabbrev-completion args))
+    (ms/dabbrev-completion args)))
+
+;; Jank that lets you do dabbrev in vterm. Worth it!
+(defun vterm-regular-dabbrev-completion (&optional args)
+  (interactive "P")
+  (if (equal major-mode 'vterm-mode)
+      (let ((inhibit-read-only t)
+            (in-dabbrev t))
+        (dabbrev-completion args))
+    (dabbrev-completion args)))
+
+(defun vterm-ivy-completion-in-region-action (orig-fun &rest args)
+  (if (equal major-mode 'vterm-mode)
+      (let ((inhibit-read-only t))
+        (dotimes (i (length dabbrev--last-abbreviation))
+          (vterm-send-backspace))
+        (vterm-insert (car args)))
+    (apply orig-fun args)))
+
+(require 'dabbrev)
 (defun ms/dabbrev-completion (&optional arg)
   "Completion on current word.
 Like \\[dabbrev-expand] but finds all expansions in the current buffer
@@ -60,22 +87,14 @@ then it searches *all* buffers."
   (let ((completion-at-point-functions '(ms/dabbrev-capf)))
     (completion-at-point)))
 
-;; Jank that lets you do dabbrev in vterm. Worth it!
-(defun vterm-dabbrev-completion (&optional args)
-  (interactive "P")
-  (if (equal major-mode 'vterm-mode)
-      (let ((inhibit-read-only t)
-            (in-dabbrev t))
-        (ms/dabbrev-completion args))
-    (ms/dabbrev-completion args)))
-
-(defun vterm-ivy-completion-in-region-action (orig-fun &rest args)
-  (if (and (equal major-mode 'vterm-mode)
-           (equal in-dabbrev t))
-      (let ((inhibit-read-only t))
-        (dotimes (i (length dabbrev--last-abbreviation))
-          (vterm-send-backspace))
-        (vterm-insert (car args)))
-    (apply orig-fun args)))
-
 (advice-add 'ivy-completion-in-region-action :around #'vterm-ivy-completion-in-region-action)
+(keymap-set vterm-mode-map "C-M-/" 'vterm-dabbrev-completion)
+(keymap-set vterm-mode-map "M-/" 'vterm-regular-dabbrev-completion)
+
+(with-eval-after-load 'org-gcal
+  (defun silence-org-gcal-sync (orig-fun &rest args)
+    (let ((inhibit-message t)
+          (message-log-max nil))
+      (apply orig-fun args)))
+
+  (advice-add 'org-gcal-sync :around #'silence-org-gcal-sync))
